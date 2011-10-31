@@ -7,10 +7,11 @@ class SessionsController < ApplicationController
     user = User.authenticate(params[:login], params[:password])
     if user
       session[:user_id] = user.id
+      session[:user_name] = user.username
       flash[:notice] = "Logged in successfully."
       @posts = user.posts
-      logger.info(@posts)
-      redirect_to_target_or_default(root_url)
+      @user = user
+      redirect_to "/user/"+session[:user_name]
     else
       flash.now[:error] = "Invalid login or password."
       render :action => 'new'
@@ -18,8 +19,10 @@ class SessionsController < ApplicationController
   end
 
   def destroy
+    logger.info("session is destroyed!")
     session[:user_id] = nil
     flash[:notice] = "You have been logged out."
     redirect_to root_url
   end
+
 end

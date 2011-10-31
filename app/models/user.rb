@@ -14,6 +14,10 @@ class User < ActiveRecord::Base
   validates_length_of :password, :minimum => 4, :allow_blank => true
 
   has_many :posts
+  has_many :friendships
+  has_many :friends, :through => :friendships
+  has_many :inverse_friendships, :class_name => "Friendship", :foreign_key => "friend_name"
+  has_many :inverse_friends, :through => :inverse_friendships, :source => :user
 
   # login can be either username or email address
   def self.authenticate(login, pass)
@@ -37,4 +41,5 @@ class User < ActiveRecord::Base
   def encrypt_password(pass)
     Digest::SHA1.hexdigest([pass, password_salt].join)
   end
+
 end

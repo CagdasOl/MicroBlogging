@@ -5,19 +5,18 @@ class PostsController < ApplicationController
   end
 
   def new
+    @post = Post.new
     @user = User.find(session[:user_id])
-    @post = @user.posts.build
+
+    respond_to do |format|
+      format.html # new.html.erb
+      format.xml { render :xml => @post }
+    end
   end
 
-  def create
 
-    @user = User.find(session[:user_id])
-    @post = @user.posts.build(params[:post])
-    if @post.save
-      redirect_to_target_or_default(home)
-    else
-      render :action => "new"
-    end
+  def returnHome
+
   end
 
 end

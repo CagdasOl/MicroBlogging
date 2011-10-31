@@ -32,11 +32,12 @@ module Authentication
     unless logged_in?
       flash[:error] = "You must first log in or sign up before accessing this page."
       store_target_location
-      redirect_to login_url
+      redirect_to "/"
     end
   end
 
   def redirect_to_target_or_default(default)
+    logger.info("redirecting to default")
     redirect_to(session[:return_to] || default)
     session[:return_to] = nil
   end

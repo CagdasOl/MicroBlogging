@@ -1,0 +1,74 @@
+<p>
+  <%= link_to "Log out", logout_path %>
+  <%= h current_user.username %>
+</p>
+<% if logged_in? && current_user.username == session[:username] && @post.nil? %>
+    <div align="center">
+
+      <% logger.info("user is logger in") %>
+      <% form_tag(:controller => "users", :action => "createPost") do %>
+          <%= label_tag(:content, "What are you doing?") %>
+          <br/>
+          <%= text_area_tag(:content, nil, :size => "44x6") %>
+          <br/>
+          <%= submit_tag("Update") %>
+      <% end %>
+    </div>
+<% else %>
+    <%= link_to "Follow", friendships_path(:friend_id => User.find_by_username(session[:username])), :method => :post %>
+<% end %>
+<table align="center">
+  <tr>
+    <td valign="top" style="width: 300px">
+      <h3>Posts</h3>
+      <table>
+        <tbody>
+        <% if !@posts.nil? %>
+            <% for post in @posts %>
+                <tr>
+                  <td>
+                    <table cellspacing="5px" style="border-style: solid;width: 250px;table-layout: fixed;">
+                      <tbody>
+                      <tr>
+                        <td>
+                          <%= link_to User.find(post.user_id).username, '/user/'+User.find(post.user_id).username %>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <span style="word-wrap: break-word"><%= post.content %></span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <%= h post.created_at %>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+            <% end %>
+        <% end %>
+        </tbody>
+      </table>
+    </td>
+    <td valign="top" style="padding-left: 50%" width="300px">
+      <h3>Users</h3>
+      <table>
+        <tbody>
+        <% for user in User.all %>
+            <tr>
+              <td>
+                <%= link_to user.username, '/user/'+user.username %>
+              </td>
+            </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </td>
+  </tr>
+</table>
+
+
+<%= link_to "Home", "/user/" + current_user.username %>
